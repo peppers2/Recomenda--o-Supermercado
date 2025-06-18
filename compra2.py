@@ -486,6 +486,7 @@ def main():
 
 
 
+
             
             # Novo: Treemap de categorias de produtos
             st.markdown('<div class="subheader">Distribuição por Categoria</div>', unsafe_allow_html=True)
