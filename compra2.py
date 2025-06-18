@@ -463,6 +463,7 @@ def main():
             top_rules = rules[
                 rules['antecedents'].apply(lambda x: len(carrinho_set.intersection(x)) > 0)
             ].copy()
+            
 
             # Ordenar por lift e confiança
             top_rules = top_rules.sort_values(by=['lift', 'confidence'], ascending=False).head(15)
