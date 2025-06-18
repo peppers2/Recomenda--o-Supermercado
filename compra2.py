@@ -603,7 +603,7 @@ def main():
                 with col1:
                     st.markdown('<div class="metric-card">'
                                '<h3>📊 Confiança Média</h3>'
-                               f'<h1>{metrics["avg_confidence"] *100 :.2f}</h1>'
+                               f'<h1>{ (metrics["avg_confidence"] * 100) :.2f}</h1>'
                                '<p>Probabilidade média de acerto</p>'
                                '</div>', unsafe_allow_html=True)
                
