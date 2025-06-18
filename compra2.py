@@ -116,7 +116,6 @@ def load_data():
     
     return df, catalogo, transacoes
 
-# Pré-processamento
 @st.cache_resource
 def prepare_rules(df):
     # Remover coluna de data para análise
@@ -129,6 +128,10 @@ def prepare_rules(df):
     # Filtrar regras relevantes
     rules = rules[(rules['lift'] > 1.5) & (rules['confidence'] > 0.3)]
     rules = rules.sort_values(by=['lift', 'confidence'], ascending=False)
+    
+    # 🔧 Corrigir erro de serialização JSON: transformar frozensets em listas
+    rules['antecedents'] = rules['antecedents'].apply(lambda x: list(x))
+    rules['consequents'] = rules['consequents'].apply(lambda x: list(x))
     
     return rules
 
@@ -381,18 +384,146 @@ def main():
                     st.plotly_chart(fig, use_container_width=True)
                 else:
                     st.info("Adicione mais produtos para visualizar as associações")
+                
+                # Novo: Gráfico de Sankey para fluxo de associações
+                st.markdown('<div class="subheader">Fluxo de Associações</div>', unsafe_allow_html=True)
+                if G.edges():
+                    # Preparar dados para Sankey
+                    sources = []
+                    targets = []
+                    values = []
+                    labels = list(basket_set) + recommendations
+                    
+                    for edge in G.edges(data=True):
+                        sources.append(labels.index(edge[0]))
+                        targets.append(labels.index(edge[1]))
+                        values.append(edge[2]['weight'])
+                    
+                    fig = go.Figure(go.Sankey(
+                        node=dict(
+                            pad=15,
+                            thickness=20,
+                            line=dict(color="black", width=0.5),
+                            label=labels,
+                            color="#4caf50"
+                        ),
+                        link=dict(
+                            source=sources,
+                            target=targets,
+                            value=values
+                        )))
+                    
+                    fig.update_layout(height=500)
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                # Novo: Heatmap de correlação entre itens
+                st.markdown('<div class="subheader">Correlação entre Itens</div>', unsafe_allow_html=True)
+                if len(st.session_state.basket) > 1:
+                    # Criar matriz de correlação
+                    basket_items = list(basket_set) + recommendations
+                    correlation_matrix = pd.DataFrame(index=basket_items, columns=basket_items)
+                    
+                    for item1 in basket_items:
+                        for item2 in basket_items:
+                            if item1 == item2:
+                                correlation_matrix.loc[item1, item2] = 1
+                            else:
+                                # Encontrar regras que conectam os itens
+                                matching_rules = rules[
+                                    ((rules['antecedents'].apply(lambda x: item1 in x) & 
+                                    rules['consequents'].apply(lambda x: item2 in x)) |
+                                    (rules['antecedents'].apply(lambda x: item2 in x) & 
+                                    rules['consequents'].apply(lambda x: item1 in x)))
+                                ]
+
+                                if not matching_rules.empty:
+                                    correlation_matrix.loc[item1, item2] = matching_rules['lift'].max()
+                                else:
+                                    correlation_matrix.loc[item1, item2] = 0
+                    
+                    fig = px.imshow(
+                        correlation_matrix.astype(float) ,  # converter para percentual
+                        labels=dict(x="Item", y="Item", color="Associação (%)"),
+                        x=correlation_matrix.columns,
+                        y=correlation_matrix.index,
+                        color_continuous_scale='Greens',
+                        text_auto='.2f'  # mostrar valores com 2 casas decimais
+)
+                    fig.update_layout(height=600)
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.info("Adicione mais itens à cesta para ver correlações")
             
             # Top associações
             st.markdown('<div class="subheader">Principais Associações no Modelo</div>', unsafe_allow_html=True)
-            top_rules = rules.head(10).copy()
-            top_rules['Associação'] = top_rules['antecedents'].astype(str) + " → " + top_rules['consequents'].astype(str)
-            
+            #top_rules = rules.head(10).copy()
+            #top_rules['Associação'] = top_rules['antecedents'].astype(str) + " → " + top_rules['consequents'].astype(str)
+            # Filtrar regras que envolvem produtos no carrinho
+            carrinho_set = set(st.session_state.basket)
+            top_rules = rules[
+                rules['antecedents'].apply(lambda x: len(carrinho_set.intersection(x)) > 0)
+            ].copy()
+
+            # Ordenar por lift e confiança
+            top_rules = top_rules.sort_values(by=['lift', 'confidence'], ascending=False).head(15)
+
+            # Criar coluna de descrição da associação
+            top_rules['Associação'] = top_rules['antecedents'].apply(lambda x: ', '.join(x)) + " → " + \
+                                    top_rules['consequents'].apply(lambda x: ', '.join(x))
+
+
             fig = px.bar(top_rules, x='lift', y='Associação', 
                          color='confidence',
+                         color_continuous_scale='Greens',
                          labels={'lift': 'Força da Associação (Lift)', 'confidence': 'Confiança'},
                          height=500)
             fig.update_layout(showlegend=True)
             st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+            
+            # Novo: Scatter plot de suporte vs confiança
+            st.markdown('<div class="subheader">Relação Suporte vs Confiança</div>', unsafe_allow_html=True)
+            fig = px.scatter(rules, x='support', y='confidence', 
+                            size='lift', color='lift',
+                            hover_data=['antecedents', 'consequents'],
+                            labels={
+                                'support': 'Suporte',
+                                'confidence': 'Confiança',
+                                'lift': 'Força (Lift)'
+                            },
+                            color_continuous_scale='Greens')
+            fig.update_layout(height=500)
+            st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
+            
+            # Novo: Treemap de categorias de produtos
+            st.markdown('<div class="subheader">Distribuição por Categoria</div>', unsafe_allow_html=True)
+            category_counts = {cat: len(prods) for cat, prods in catalogo.items()}
+            df_categories = pd.DataFrame({
+                'Categoria': list(category_counts.keys()),
+                'Quantidade': list(category_counts.values()),
+                'Parent': [''] * len(category_counts)
+            })
+            
+            fig = px.treemap(df_categories, path=['Parent', 'Categoria'], values='Quantidade',
+                            color='Quantidade', color_continuous_scale='Greens')
+            fig.update_layout(height=400)
+            st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+
+
         
         with tab3:
             st.markdown('<div class="subheader">Desempenho do Modelo</div>', unsafe_allow_html=True)
@@ -436,5 +567,36 @@ def main():
             else:
                 st.info("Adicione produtos à cesta para ver as métricas de recomendação")
 
+
+
+
+
+
+
 if __name__ == "__main__":
     main()
+
+        # Rodapé fixo no final de todas as páginas
+    st.markdown("""
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        text-align: center;
+        padding: 1rem 0;
+        font-size: 1rem;
+        font-weight: 500;
+        border-top: 1px solid #c8e6c9;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+        z-index: 9999;
+    }
+    </style>
+
+    <div class="footer">
+        Desenvolvido por <strong>Pedro Siqueira</strong> © 2025
+    </div>
+    """, unsafe_allow_html=True)
