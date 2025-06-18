@@ -1,0 +1,131 @@
+{
+  "data_geracao": "2025-06-18 14:24:17",
+  "num_transacoes": 10000,
+  "num_produtos": 71,
+  "categorias": [
+    "Cervejas",
+    "Destilados",
+    "Vinhos",
+    "Acompanhamentos",
+    "Bebês",
+    "Limpeza Pesada",
+    "Limpeza Geral",
+    "Limpeza Pessoal",
+    "Grãos",
+    "Massas"
+  ],
+  "padroes": [
+    {
+      "itens": [
+        "Cerveja Pilsen",
+        "Amendoim",
+        "Batata Chips"
+      ],
+      "probabilidade": 0.12
+    },
+    {
+      "itens": [
+        "Cerveja IPA",
+        "Tábua de Queijos",
+        "Castanha de Caju"
+      ],
+      "probabilidade": 0.08
+    },
+    {
+      "itens": [
+        "Cerveja Weiss",
+        "Azeitona",
+        "Biscoito de Polvilho"
+      ],
+      "probabilidade": 0.06
+    },
+    {
+      "itens": [
+        "Fralda P",
+        "Lenço Umedecido",
+        "Pomada Assadura"
+      ],
+      "probabilidade": 0.1
+    },
+    {
+      "itens": [
+        "Fralda M",
+        "Leite em Pó",
+        "Mamadeira"
+      ],
+      "probabilidade": 0.09
+    },
+    {
+      "itens": [
+        "Fralda G",
+        "Papinha",
+        "Sabonete Líquido"
+      ],
+      "probabilidade": 0.07
+    },
+    {
+      "itens": [
+        "Sabão em Pó",
+        "Amaciante",
+        "Água Sanitária"
+      ],
+      "probabilidade": 0.11
+    },
+    {
+      "itens": [
+        "Desinfetante",
+        "Saco de Lixo",
+        "Multiuso"
+      ],
+      "probabilidade": 0.09
+    },
+    {
+      "itens": [
+        "Álcool 70%",
+        "Limpa Vidros",
+        "Pasta de Dente"
+      ],
+      "probabilidade": 0.08
+    },
+    {
+      "itens": [
+        "Arroz Branco",
+        "Feijão Carioca",
+        "Óleo de Soja"
+      ],
+      "probabilidade": 0.15
+    },
+    {
+      "itens": [
+        "Pão Francês",
+        "Manteiga",
+        "Leite Integral"
+      ],
+      "probabilidade": 0.13
+    },
+    {
+      "itens": [
+        "Café",
+        "Açúcar",
+        "Biscoito Maizena"
+      ],
+      "probabilidade": 0.12
+    },
+    {
+      "itens": [
+        "Vinho Tinto Seco",
+        "Queijo Brie",
+        "Presunto Parma"
+      ],
+      "probabilidade": 0.05
+    },
+    {
+      "itens": [
+        "Whisky",
+        "Gelo",
+        "Água Mineral"
+      ],
+      "probabilidade": 0.04
+    }
+  ]
+}

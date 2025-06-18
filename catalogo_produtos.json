@@ -1,0 +1,89 @@
+{
+  "Cervejas": [
+    "Cerveja Pilsen",
+    "Cerveja IPA",
+    "Cerveja Weiss",
+    "Cerveja Lager",
+    "Cerveja Artesanal",
+    "Cerveja Zero Álcool"
+  ],
+  "Destilados": [
+    "Vodka",
+    "Whisky",
+    "Gin",
+    "Rum",
+    "Tequila",
+    "Cachaça"
+  ],
+  "Vinhos": [
+    "Vinho Tinto Seco",
+    "Vinho Branco",
+    "Vinho Rosé",
+    "Espumante",
+    "Vinho do Porto"
+  ],
+  "Acompanhamentos": [
+    "Amendoim",
+    "Batata Chips",
+    "Biscoito Salgado",
+    "Castanha de Caju",
+    "Tábua de Queijos",
+    "Azeitona",
+    "Salgadinhos",
+    "Pasta de Amendoim",
+    "Torradas",
+    "Biscoito de Polvilho"
+  ],
+  "Bebês": [
+    "Fralda P",
+    "Fralda M",
+    "Fralda G",
+    "Fralda XG",
+    "Lenço Umedecido",
+    "Pomada Assadura",
+    "Mamadeira",
+    "Chupeta",
+    "Leite em Pó",
+    "Papinha"
+  ],
+  "Limpeza Pesada": [
+    "Desinfetante",
+    "Água Sanitária",
+    "Detergente Industrial",
+    "Limpa-Fornos",
+    "Inseticida",
+    "Desentupidor"
+  ],
+  "Limpeza Geral": [
+    "Sabão em Pó",
+    "Amaciante",
+    "Álcool 70%",
+    "Limpa Vidros",
+    "Multiuso",
+    "Saco de Lixo"
+  ],
+  "Limpeza Pessoal": [
+    "Sabonete Líquido",
+    "Shampoo",
+    "Condicionador",
+    "Pasta de Dente",
+    "Fio Dental",
+    "Creme de Barbear"
+  ],
+  "Grãos": [
+    "Arroz Branco",
+    "Arroz Integral",
+    "Feijão Carioca",
+    "Feijão Preto",
+    "Lentilha",
+    "Grão-de-Bico"
+  ],
+  "Massas": [
+    "Macarrão Espaguete",
+    "Macarrão Parafuso",
+    "Macarrão Penne",
+    "Macarrão Instantâneo",
+    "Farinha de Trigo",
+    "Farinha de Mandioca"
+  ]
+}
