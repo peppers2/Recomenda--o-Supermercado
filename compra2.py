@@ -487,26 +487,6 @@ def main():
 
 
             
-            # Novo: Scatter plot de suporte vs confiança
-            st.markdown('<div class="subheader">Relação Suporte vs Confiança</div>', unsafe_allow_html=True)
-            fig = px.scatter(rules, x='support', y='confidence', 
-                            size='lift', color='lift',
-                            hover_data=['antecedents', 'consequents'],
-                            labels={
-                                'support': 'Suporte',
-                                'confidence': 'Confiança',
-                                'lift': 'Força (Lift)'
-                            },
-                            color_continuous_scale='Greens')
-            fig.update_layout(height=500)
-            st.plotly_chart(fig, use_container_width=True)
-
-
-
-
-
-
-            
             # Novo: Treemap de categorias de produtos
             st.markdown('<div class="subheader">Distribuição por Categoria</div>', unsafe_allow_html=True)
             category_counts = {cat: len(prods) for cat, prods in catalogo.items()}
@@ -558,16 +538,42 @@ def main():
                                '<p>Regras aplicáveis</p>'
                                '</div>', unsafe_allow_html=True)
                 
-                # Distribuição de métricas
-                st.markdown('<div class="subheader">Distribuição das Métricas</div>', unsafe_allow_html=True)
-                
-                fig = px.histogram(rules, x='lift', nbins=30, 
-                                  labels={'lift': 'Força da Associação (Lift)'},
-                                  height=400)
-                fig.update_layout(bargap=0.1)
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.info("Adicione produtos à cesta para ver as métricas de recomendação")
+               
+                # Configuração do tema verde
+                green_theme = {
+                    'colorway': ['#2e7d32', '#388e3c', '#43a047', '#4caf50', '#66bb6a'],
+                    'plot_bgcolor': '#f5f9f5',
+                    'paper_bgcolor': '#ffffff'
+                }
+
+                if not rules.empty:
+                    with st.container():
+                        st.subheader("📊 Análise Completa das Associações entre Produtos")
+                        
+                        col1, col2 = st.columns(2)
+                        
+                        with col1:
+                            # Gráfico de Violino Verde
+                            fig1 = px.violin(rules, y='lift', box=True, color_discrete_sequence=['#2e7d32'])
+                            fig1.update_layout(
+                                title='Distribuição da Força das Associações',
+                                **green_theme
+                            )
+                            st.plotly_chart(fig1, use_container_width=True)
+                            
+                        with col2:
+                            # Heatmap Verde
+                            fig2 = px.density_heatmap(
+                                rules, x="confidence", y="lift",
+                                color_continuous_scale='Greens',
+                                title='Relação Confiança vs Força'
+                            )
+                            fig2.update_layout(**green_theme)
+                            st.plotly_chart(fig2, use_container_width=True)
+                        
+
+                else:
+                    st.info("Adicione produtos à cesta para ver as métricas de recomendação")
 
 
 
